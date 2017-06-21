@@ -568,8 +568,10 @@
 			mutableValue(val, old) {
         if (this.multiple) {
           this.onChange ? this.onChange(val) : null
+          this.$emit("change", val)
         } else {
           this.onChange && val !== old ? this.onChange(val) : null
+          if(val !== old) this.$emit("change", val)
         }
       },
 
@@ -626,7 +628,7 @@
        */
       select(option) {
         if (this.isOptionSelected(option)) {
-          this.deselect(option)
+          if(this.multiple) this.deselect(option)
         } else {
           if (this.taggable && !this.optionExists(option)) {
             option = this.createOption(option)
