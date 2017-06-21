@@ -240,7 +240,7 @@
                     display: none;
                 }
             }
-            &.v-select-searchable:not(.v-select-open):not(.v-select-loading) {
+            &.v-select-searchable {
                 height: $field-height + 2;
                 
                 & > .dropdown-toggle {
