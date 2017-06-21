@@ -140,7 +140,7 @@
         li {
             line-height: 1.42857143; /* Normalize line height */
             
-            & > a {
+            & > div {
                 display: block;
                 padding: 3px 20px;
                 clear: both;
@@ -153,12 +153,12 @@
             }
         }
         .dropdown-menu {
-            .active > a {
+            .active > div {
                 color: #333;
                 background: rgba(50, 50, 50, .1);
             }
             & > .highlight {
-                & > a {
+                & > div {
                     background: #5897fb;
                     color: #fff;
                 }
@@ -293,7 +293,9 @@
         <button v-if="multiple" @click="deselect(option)" type="button" class="close">
           <span aria-hidden="true">&times;</span>
         </button>
-        {{ getOptionLabel(option) }}
+        <slot name="selected-option" :option="option">
+            {{ getOptionLabel(option) }}
+        </slot>
       </span>
 
       <input
@@ -324,9 +326,11 @@
     <transition :name="transition">
       <ul ref="dropdownMenu" v-if="dropdownOpen" class="dropdown-menu" :style="{ 'max-height': maxHeight }">
         <li v-for="(option, index) in filteredOptions" v-bind:key="index" :class="{ active: isOptionSelected(option), highlight: index === typeAheadPointer }" @mouseover="typeAheadPointer = index">
-          <a @mousedown.prevent="select(option)">
-            {{ getOptionLabel(option) }}
-          </a>
+          <div @mousedown.prevent="select(option)">
+            <slot name="picker-option" :option="option">
+                {{ getOptionLabel(option) }}
+            </slot>
+          </div>
         </li>
         <li v-if="!filteredOptions.length" class="no-options">
           <slot name="no-options">Sorry, no matching options.</slot>
