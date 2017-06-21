@@ -539,6 +539,16 @@
       },
       
       /**
+       * Emit search even if search string is empty.
+       * @type {Boolean}
+       * @default {false}
+       */
+      searchOnEmpty: {
+        type: Boolean,
+        default: false
+      },
+      
+      /**
        * Allow value to be empty.
        * @type {Boolean}
        * @default {true}
