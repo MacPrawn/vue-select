@@ -794,12 +794,12 @@
        */
       dropdownClasses() {
         return {
-          v-select-open: this.dropdownOpen,
-          v-select-single: !this.multiple,
-          v-select-searching: this.searching,
-          v-select-searchable: this.searchable,
-          v-select-unsearchable: !this.searchable,
-          v-select-loading: this.mutableLoading
+          "v-select-open": this.dropdownOpen,
+          "v-select-single": !this.multiple,
+          "v-select-searching": this.searching,
+          "v-select-searchable": this.searchable,
+          "v-select-unsearchable": !this.searchable,
+          "v-select-loading": this.mutableLoading
         }
       },
 
