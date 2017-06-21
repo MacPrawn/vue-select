@@ -363,7 +363,7 @@
        * An array of strings or objects to be used as dropdown choices.
        * If you are using an array of objects, vue-select will look for
        * a `label` key (ex. [{label: 'This is Foo', value: 'foo'}]). A
-       * custom label key can be set with the `label` prop.
+       * custom label key can be set with the `label_key` prop.
        * @type {Object}
        */
       options: {
@@ -371,6 +371,26 @@
         default() {
           return []
         },
+      },
+
+      /**
+       * Tells vue-select what key to use when generating option
+       * values when each `option` is an object.
+       * @type {String}
+       */
+      value_key: {
+        type: String,
+        default: 'value'
+      },
+
+      /**
+       * Tells vue-select what key to use when generating option
+       * labels when each `option` is an object.
+       * @type {String}
+       */
+      label_key: {
+        type: String,
+        default: 'label'
       },
 
       /**
@@ -440,18 +460,8 @@
       },
 
       /**
-       * Tells vue-select what key to use when generating option
-       * labels when each `option` is an object.
-       * @type {String}
-       */
-      label: {
-        type: String,
-        default: 'label'
-      },
-
-      /**
        * Callback to generate the label text. If {option}
-       * is an object, returns option[this.label] by default.
+       * is an object, returns option[this.label_key] by default.
        * @param  {Object || String} option
        * @return {String}
        */
@@ -459,8 +469,8 @@
         type: Function,
         default(option) {
           if (typeof option === 'object') {
-            if (this.label && option[this.label]) {
-              return option[this.label]
+            if (this.label_key && option[this.label_key]) {
+              return option[this.label_key]
             }
           }
           return option;
@@ -508,20 +518,11 @@
         type: Function,
         default(newOption) {
           if (typeof this.mutableOptions[0] === 'object') {
-            newOption = {[this.label]: newOption}
+            newOption = {[this.label_key]: newOption}
           }
           this.$emit('option:created', newOption)
           return newOption
         }
-      },
-
-      /**
-       * When false, updating the options will not reset the select value
-       * @type {Boolean}
-       */
-      resetOnOptionsChange: {
-        type: Boolean,
-        default: false
       },
 
       /**
@@ -575,29 +576,12 @@
     watch: {
       /**
        * When the value prop changes, update
-			 * the internal mutableValue.
+       * the internal mutableValue.
        * @param  {mixed} val
        * @return {void}
        */
       value(val) {
-				this.mutableValue = val
-      },
-
-      /**
-       * Maybe run the onChange callback.
-       * @param  {string|object} val
-       * @param  {string|object} old
-       * @return {void}
-       */
-			mutableValue(val, old) {
-        if (this.multiple) {
-          const new_ids = val ? val.map(item => { return item.id }).join(",") : null
-          const old_ids = old ? old.map(item => { return item.id }).join(",") : null
-          console.log(new_ids, old_ids)
-          this.onChange && new_ids !== old_ids ? this.onChange(val) : null
-        } else {
-          this.onChange && val !== old ? this.onChange(val) : null
-        }
+        this.mutableValue = val
       },
 
       /**
@@ -611,24 +595,14 @@
       },
 
       /**
-			 * Maybe reset the mutableValue
-       * when mutableOptions change.
-       * @return {[type]} [description]
-       */
-      mutableOptions() {
-        if (!this.taggable && this.resetOnOptionsChange) {
-            this.mutableValue = this.multiple ? [] : null
-        }
-      },
-
-      /**
-			 * Always reset the mutableValue when
+       * Always reset the mutableValue when
        * the multiple prop changes.
        * @param  {Boolean} val
        * @return {void}
        */
       multiple(val) {
-				this.mutableValue = val ? [] : null
+        this.mutableValue = val ? [] : null
+        this.value_changed()
       }
     },
 
@@ -637,15 +611,18 @@
      * attach any event listeners.
      */
     created() {
-			this.mutableValue = this.value
+      this.mutableValue = this.value
       this.mutableOptions = this.options.slice(0)
-			this.mutableLoading = this.loading
-
+      this.mutableLoading = this.loading
+      
       this.$on('option:created', this.maybePushTag)
     },
 
     methods: {
-
+      value_changed() {
+        if(!this.onChange) return
+        this.onChange(this.mutableValue)
+      },
       /**
        * Select a given option.
        * @param  {Object|String} option
@@ -666,6 +643,7 @@
           } else {
             this.mutableValue = option
           }
+          this.value_changed()
         }
 
         this.onAfterSelect(option)
@@ -681,15 +659,17 @@
           if(this.allowEmpty || (this.mutableValue.length > 1)) {
               let ref = -1
               this.mutableValue.forEach((val) => {
-                if (val === option || typeof val === 'object' && val[this.label] === option[this.label]) {
+                if (val === option || typeof val === 'object' && val[this.label_key] === option[this.label_key]) {
                   ref = val
                 }
               })
               var index = this.mutableValue.indexOf(ref)
               this.mutableValue.splice(index, 1)
+              this.value_changed()
             }
         } else if(this.allowEmpty) {
           this.mutableValue = null
+          this.value_changed()
         }
       },
 
@@ -734,9 +714,9 @@
         if (this.multiple && this.mutableValue) {
           let selected = false
           this.mutableValue.forEach(opt => {
-            if (typeof opt === 'object' && opt[this.label] === option[this.label]) {
+            if (typeof opt === 'object' && opt[this.label_key] === option[this.label_key]) {
               selected = true
-            } else if (typeof opt === 'object' && opt[this.label] === option) {
+            } else if (typeof opt === 'object' && opt[this.label_key] === option) {
               selected = true
             }
             else if (opt === option) {
@@ -809,7 +789,7 @@
         let exists = false
 
         this.mutableOptions.forEach(opt => {
-          if (typeof opt === 'object' && opt[this.label] === option) {
+          if (typeof opt === 'object' && opt[this.label_key] === option) {
             exists = true
           } else if (opt === option) {
             exists = true
@@ -898,10 +878,10 @@
       filteredOptions() {
         let options = this.mutableOptions.filter((option) => {
           if(!this.searching) return true
-          if (typeof option === 'object' && option.hasOwnProperty(this.label)) {
-            return option[this.label].toLowerCase().indexOf(this.search.toLowerCase()) > -1
-          } else if (typeof option === 'object' && !option.hasOwnProperty(this.label)) {
-            return console.warn(`[vue-select warn]: Label key "option.${this.label}" does not exist in options object.\nhttp://sagalbot.github.io/vue-select/#ex-labels`)
+          if (typeof option === 'object' && option.hasOwnProperty(this.label_key)) {
+            return option[this.label_key].toLowerCase().indexOf(this.search.toLowerCase()) > -1
+          } else if (typeof option === 'object' && !option.hasOwnProperty(this.label_key)) {
+            return console.warn(`[vue-select warn]: Label key "option.${this.label_key}" does not exist in options object.\nhttp://sagalbot.github.io/vue-select/#ex-labels`)
           }
           return option.toLowerCase().indexOf(this.search.toLowerCase()) > -1
         })
