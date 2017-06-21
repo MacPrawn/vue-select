@@ -1,4 +1,6 @@
 <style lang="scss">
+    $field-height: 34px;
+    
     .v-select {
         position: relative;
         font-family: sans-serif;
@@ -120,7 +122,7 @@
                 -moz-appearance: none;
                 line-height: 1.42857143;
                 font-size:1em;
-                height: 34px;
+                height: $field-height;
                 display: inline-block;
                 border: none;
                 outline: none;
@@ -236,6 +238,20 @@
             &.v-select-loading {
                 .selected-tag {
                     display: none;
+                }
+            }
+            &.v-select-searchable:not(.v-select-open):not(.v-select-loading) {
+                height: $field-height + 2;
+                
+                & > .dropdown-toggle {
+                    height: 100%;
+                }
+                input[type="search"] {
+                    position: absolute;
+                    z-index: 10;
+                    top: 0px;
+                    left: 0px;
+                    width: 100%;
                 }
             }
             &.v-select-searching:not(.v-select-open):not(.v-select-loading) input[type="search"] {
@@ -850,7 +866,6 @@
        */
       filteredOptions() {
         let options = this.mutableOptions.filter((option) => {
-          if(!this.multiple) return true
           if (typeof option === 'object' && option.hasOwnProperty(this.label)) {
             return option[this.label].toLowerCase().indexOf(this.search.toLowerCase()) > -1
           } else if (typeof option === 'object' && !option.hasOwnProperty(this.label)) {
