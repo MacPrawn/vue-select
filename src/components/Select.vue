@@ -290,10 +290,10 @@
     <div ref="toggle" @mousedown.prevent="toggleDropdown" class="dropdown-toggle">
 
       <span class="selected-tag" v-for="option in valueAsArray" v-bind:key="option.index">
-        {{ getOptionLabel(option) }}
         <button v-if="multiple" @click="deselect(option)" type="button" class="close">
           <span aria-hidden="true">&times;</span>
         </button>
+        {{ getOptionLabel(option) }}
       </span>
 
       <input
@@ -476,7 +476,7 @@
           this.$emit('input', val)
         }
       },
-
+      
       /**
        * Enable/disable creating options from searchInput.
        * @type {Boolean}
@@ -536,7 +536,17 @@
        */
       inputId: {
         type: String
-      }
+      },
+      
+      /**
+       * Allow value to be empty.
+       * @type {Boolean}
+       * @default {true}
+       */
+      allowEmpty: {
+        type: Boolean,
+        default: true
+      },
     },
 
     data() {
@@ -568,10 +578,8 @@
 			mutableValue(val, old) {
         if (this.multiple) {
           this.onChange ? this.onChange(val) : null
-          this.$emit("change", val)
         } else {
           this.onChange && val !== old ? this.onChange(val) : null
-          if(val !== old) this.$emit("change", val)
         }
       },
 
@@ -592,7 +600,7 @@
        */
       mutableOptions() {
         if (!this.taggable && this.resetOnOptionsChange) {
-					this.mutableValue = this.multiple ? [] : null
+            this.mutableValue = this.multiple ? [] : null
         }
       },
 
@@ -653,15 +661,17 @@
        */
       deselect(option) {
         if (this.multiple) {
-          let ref = -1
-          this.mutableValue.forEach((val) => {
-            if (val === option || typeof val === 'object' && val[this.label] === option[this.label]) {
-              ref = val
+          if(this.allowEmpty || (this.mutableValue.length > 1)) {
+              let ref = -1
+              this.mutableValue.forEach((val) => {
+                if (val === option || typeof val === 'object' && val[this.label] === option[this.label]) {
+                  ref = val
+                }
+              })
+              var index = this.mutableValue.indexOf(ref)
+              this.mutableValue.splice(index, 1)
             }
-          })
-          var index = this.mutableValue.indexOf(ref)
-          this.mutableValue.splice(index, 1)
-        } else {
+        } else if(this.allowEmpty) {
           this.mutableValue = null
         }
       },
@@ -765,7 +775,9 @@
        */
       maybeDeleteValue() {
         if (!this.$refs.search.value.length && this.mutableValue) {
-          return this.multiple ? this.mutableValue.pop() : this.mutableValue = null
+          if(this.multiple) {
+            if(this.allowEmpty || (this.mutableValue.length > 1)) return this.mutableValue.pop()
+          } else if(this.allowEmpty) return this.mutableValue = null
         }
       },
 
