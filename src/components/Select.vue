@@ -363,7 +363,7 @@
        * An array of strings or objects to be used as dropdown choices.
        * If you are using an array of objects, vue-select will look for
        * a `label` key (ex. [{label: 'This is Foo', value: 'foo'}]). A
-       * custom label key can be set with the `label_key` prop.
+       * custom label key can be set with the `labelKey` prop.
        * @type {Object}
        */
       options: {
@@ -375,20 +375,10 @@
 
       /**
        * Tells vue-select what key to use when generating option
-       * values when each `option` is an object.
-       * @type {String}
-       */
-      value_key: {
-        type: String,
-        default: 'value'
-      },
-
-      /**
-       * Tells vue-select what key to use when generating option
        * labels when each `option` is an object.
        * @type {String}
        */
-      label_key: {
+      labelKey: {
         type: String,
         default: 'label'
       },
@@ -461,7 +451,7 @@
 
       /**
        * Callback to generate the label text. If {option}
-       * is an object, returns option[this.label_key] by default.
+       * is an object, returns option[this.labelKey] by default.
        * @param  {Object || String} option
        * @return {String}
        */
@@ -469,8 +459,8 @@
         type: Function,
         default(option) {
           if (typeof option === 'object') {
-            if (this.label_key && option[this.label_key]) {
-              return option[this.label_key]
+            if (this.labelKey && option[this.labelKey]) {
+              return option[this.labelKey]
             }
           }
           return option;
@@ -518,7 +508,7 @@
         type: Function,
         default(newOption) {
           if (typeof this.mutableOptions[0] === 'object') {
-            newOption = {[this.label_key]: newOption}
+            newOption = {[this.labelKey]: newOption}
           }
           this.$emit('option:created', newOption)
           return newOption
@@ -659,7 +649,7 @@
           if(this.allowEmpty || (this.mutableValue.length > 1)) {
               let ref = -1
               this.mutableValue.forEach((val) => {
-                if (val === option || typeof val === 'object' && val[this.label_key] === option[this.label_key]) {
+                if (val === option || typeof val === 'object' && val[this.labelKey] === option[this.labelKey]) {
                   ref = val
                 }
               })
@@ -714,9 +704,9 @@
         if (this.multiple && this.mutableValue) {
           let selected = false
           this.mutableValue.forEach(opt => {
-            if (typeof opt === 'object' && opt[this.label_key] === option[this.label_key]) {
+            if (typeof opt === 'object' && opt[this.labelKey] === option[this.labelKey]) {
               selected = true
-            } else if (typeof opt === 'object' && opt[this.label_key] === option) {
+            } else if (typeof opt === 'object' && opt[this.labelKey] === option) {
               selected = true
             }
             else if (opt === option) {
@@ -789,7 +779,7 @@
         let exists = false
 
         this.mutableOptions.forEach(opt => {
-          if (typeof opt === 'object' && opt[this.label_key] === option) {
+          if (typeof opt === 'object' && opt[this.labelKey] === option) {
             exists = true
           } else if (opt === option) {
             exists = true
@@ -878,10 +868,10 @@
       filteredOptions() {
         let options = this.mutableOptions.filter((option) => {
           if(!this.searching) return true
-          if (typeof option === 'object' && option.hasOwnProperty(this.label_key)) {
-            return option[this.label_key].toLowerCase().indexOf(this.search.toLowerCase()) > -1
-          } else if (typeof option === 'object' && !option.hasOwnProperty(this.label_key)) {
-            return console.warn(`[vue-select warn]: Label key "option.${this.label_key}" does not exist in options object.\nhttp://sagalbot.github.io/vue-select/#ex-labels`)
+          if (typeof option === 'object' && option.hasOwnProperty(this.labelKey)) {
+            return option[this.labelKey].toLowerCase().indexOf(this.search.toLowerCase()) > -1
+          } else if (typeof option === 'object' && !option.hasOwnProperty(this.labelKey)) {
+            return console.warn(`[vue-select warn]: Label key "option.${this.labelKey}" does not exist in options object.\nhttp://sagalbot.github.io/vue-select/#ex-labels`)
           }
           return option.toLowerCase().indexOf(this.search.toLowerCase()) > -1
         })
