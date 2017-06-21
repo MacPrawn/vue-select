@@ -591,7 +591,9 @@
        */
 			mutableValue(val, old) {
         if (this.multiple) {
-          this.onChange ? this.onChange(val) : null
+          const new_ids = val ? val.map(item => { return item.id }).join(",") : null
+          const old_ids = old ? old.map(item => { return item.id }).join(",") : null
+          this.onChange && new_ids !== old_ids ? this.onChange(val) : null
         } else {
           this.onChange && val !== old ? this.onChange(val) : null
         }
