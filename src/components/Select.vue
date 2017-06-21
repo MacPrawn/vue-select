@@ -638,7 +638,7 @@
         if (this.isOptionSelected(option)) {
           if(this.multiple) this.deselect(option)
         } else {
-          if (this.taggable && !this.optionExists(option)) {
+          if (this.pushTags && !this.optionExists(option)) {
             option = this.createOption(option)
           }
 
@@ -887,7 +887,7 @@
           }
           return option.toLowerCase().indexOf(this.search.toLowerCase()) > -1
         })
-        if (this.taggable && this.search.length && !this.optionExists(this.search)) {
+        if (this.pushTags && this.search.length && !this.optionExists(this.search)) {
           options.unshift(this.search)
         }
         return options
