@@ -850,6 +850,7 @@
        */
       filteredOptions() {
         let options = this.mutableOptions.filter((option) => {
+          if(!this.multiple) return true
           if (typeof option === 'object' && option.hasOwnProperty(this.label)) {
             return option[this.label].toLowerCase().indexOf(this.search.toLowerCase()) > -1
           } else if (typeof option === 'object' && !option.hasOwnProperty(this.label)) {
