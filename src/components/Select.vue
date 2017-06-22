@@ -412,6 +412,16 @@
        * labels when each `option` is an object.
        * @type {String}
        */
+      idKey: {
+        type: String,
+        default: 'id'
+      },
+
+      /**
+       * Tells vue-select what key to use when generating option
+       * labels when each `option` is an object.
+       * @type {String}
+       */
       labelKey: {
         type: String,
         default: 'label'
@@ -654,36 +664,40 @@
     },
 
     methods: {
-      value_changed() {
+      value_changed(option) {
         if(!this.onChange) return
-        this.onChange(this.mutableValue)
+        this.onChange(option || this.mutableValue)
       },
       /**
        * Select a given option.
        * @param  {Object|String} option
        * @return {void}
        */
-      select(option) {
-        if(typeof(option) !== "object") option = this.createOptionLabel(option, true)
-        if (this.isOptionSelected(option)) {
-          if(this.multiple) this.deselect(option)
-        } else {
-          if (this.pushTags && !this.optionExists(option)) {
-            option = this.createOption(option)
-          }
+        select(option) {
+            if(typeof(option) !== "object") option = this.createOptionLabel(option, true)
 
-          if (this.multiple && !this.mutableValue) {
-            this.mutableValue = [option]
-          } else if (this.multiple) {
-            this.mutableValue.push(option)
-          } else {
-            this.mutableValue = option
-          }
-          this.value_changed()
-        }
+            if (this.isOptionSelected(option)) {
+                if(this.multiple) this.deselect(option)
+            } else {
+                if (this.pushTags && !this.optionExists(option)) {
+                    option = this.createOption(option)
+                }
+                
+                if(this.idKey && !option[this.idKey]) this.value_changed(option)
+                else {
+                    if (this.multiple && !this.mutableValue) {
+                        this.mutableValue = [option]
+                    } else if (this.multiple) {
+                        this.mutableValue.push(option)
+                    } else {
+                        this.mutableValue = option
+                    }
+                }
+                this.value_changed()
+            }
 
-        this.onAfterSelect(option)
-      },
+            this.onAfterSelect(option)
+        },
 
       /**
        * De-select a given option.
