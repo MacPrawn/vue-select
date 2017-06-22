@@ -58,24 +58,27 @@
                 height: 0;
             }
         }
-        .dropdown-menu {
-            display:block;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            z-index: 1000;
-            min-width: 160px;
-            padding: 5px 0;
-            margin: 0;
-            width: 100%;
-            overflow-y: scroll;
-            border: 1px solid rgba(0, 0, 0, .26);
-            box-shadow: 0px 3px 6px 0px rgba(0,0,0,.15);
-            border-top: none;
-            border-radius: 0 0 4px 4px;
-            text-align: left;
+        ul {
             list-style: none;
-            background: #fff;
+            text-align: left;
+            
+            &.dropdown-menu {
+                display:block;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                z-index: 1000;
+                min-width: 160px;
+                padding: 5px 0;
+                margin: 0;
+                width: 100%;
+                overflow-y: scroll;
+                border: 1px solid rgba(0, 0, 0, .26);
+                box-shadow: 0px 3px 6px 0px rgba(0,0,0,.15);
+                border-top: none;
+                border-radius: 0 0 4px 4px;
+                background: #fff;
+            }
         }
         .no-options {
             text-align: center;
@@ -143,8 +146,6 @@
             & > div {
                 display: block;
                 padding: 3px 20px;
-                clear: both;
-                color: #333; /* Overrides most CSS frameworks */
                 white-space: nowrap;
             }
             
@@ -153,17 +154,34 @@
             }
         }
         .dropdown-menu {
-            .active > div {
+            li.active > div {
                 color: #333;
                 background: rgba(50, 50, 50, .1);
             }
-            & > .highlight {
+            li.highlight {
                 & > div {
                     background: #5897fb;
                     color: #fff;
                 }
                 
                 &:not(:last-child) { margin-bottom: 0; /* Fixes Bulma Margin */ }
+            }
+            li.optgroup {
+                & > div {
+                    background: #fff;
+                    color: #ccc;
+                    
+                    & > ul {
+                        color: initial;
+                        max-height: none;
+                        padding: 0;
+                        margin: 0 0 0 1em;
+                    }
+                }
+                
+                &:hover {
+                    cursor: default;
+                }
             }
         }
         .spinner {
@@ -325,11 +343,20 @@
 
     <transition :name="transition">
       <ul ref="dropdownMenu" v-if="dropdownOpen" class="dropdown-menu" :style="{ 'max-height': maxHeight }">
-        <li v-for="(option, index) in filteredOptions" v-bind:key="index" :class="{ active: isOptionSelected(option), highlight: index === typeAheadPointer }" @mouseover="typeAheadPointer = index">
-          <div @mousedown.prevent="select(option)">
+        <li v-for="(option, index) in filteredOptions" :key="index" :class="{ active: isOptionSelected(option), highlight: option === typeAheadOptions[typeAheadPointer], optgroup: option.hasOwnProperty('options') }" @mouseover="typeAheadPointer = index">
+          <div @mousedown.prevent="option.hasOwnProperty('options') ? null : select(option)">
             <slot name="picker-option" :option="option">
                 {{ getOptionLabel(option) }}
             </slot>
+            <ul v-if="option.hasOwnProperty('options')">
+                <li v-for="(option, index) in option.options" :key="index" :class="{ active: isOptionSelected(option), highlight: option === typeAheadOptions[typeAheadPointer] }" @mouseover="typeAheadPointer = index">
+                  <div @mousedown.prevent="select(option)">
+                    <slot name="picker-option" :option="option">
+                        {{ getOptionLabel(option) }}
+                    </slot>
+                  </div>
+                </li>
+            </ul>
           </div>
         </li>
         <li v-if="!filteredOptions.length" class="no-options">
@@ -361,6 +388,8 @@
 
       /**
        * An array of strings or objects to be used as dropdown choices.
+       * For option groups, use the format:
+       * [label: "Group 1", options: [{label: 'This is Foo', value: 'foo'}]]
        * If you are using an array of objects, vue-select will look for
        * a `label` key (ex. [{label: 'This is Foo', value: 'foo'}]). A
        * custom label key can be set with the `labelKey` prop.
@@ -514,6 +543,17 @@
           return newOption
         }
       },
+      /**
+       * Create option item label
+       * @type {Function}
+       */
+      createOptionLabel: {
+        type: Function,
+        default(option, deconstruct) {
+          if(deconstruct) return option.replace(/^Create\s+?"(.*)"$/, "$1")
+          return 'Create "' + option + '"'
+        }
+      },
 
       /**
        * Disable the dropdown entirely.
@@ -619,6 +659,7 @@
        * @return {void}
        */
       select(option) {
+        if(typeof(option) !== "object") option = this.createOptionLabel(option, true)
         if (this.isOptionSelected(option)) {
           if(this.multiple) this.deselect(option)
         } else {
@@ -775,19 +816,33 @@
        * @param  {Object || String} option
        * @return {boolean}
        */
-      optionExists(option) {
-        let exists = false
-
-        this.mutableOptions.forEach(opt => {
-          if (typeof opt === 'object' && opt[this.labelKey] === option) {
-            exists = true
-          } else if (opt === option) {
-            exists = true
-          }
-        })
-
-        return exists
-      },
+        optionExists(option) {
+            let exists = false
+            
+            this.mutableOptions.forEach(opt => {
+                if(!exists) {
+                    const equals = (a, b) => {
+                        const a_type = typeof(a)
+                        const b_type = typeof(b)
+                        if(a_type !== b_type) {
+                            if(a_type === 'object') a = a[this.label_key]
+                            if(b_type === 'object') b = b[this.label_key]
+                        }
+                        return a === b
+                    };
+                    
+                    if(typeof(opt) === 'object') {
+                        if(opt.hasOwnProperty("options")) {
+                            opt.options.forEach((opt) => {
+                                if(equals(opt, option)) exists = true
+                            })
+                        } else if(equals(opt, option)) exists = true
+                    } else if(equals(opt, option)) exists = true
+                }
+            })
+            
+            return exists
+        },
 
       /**
        * If push-tags is true, push the
@@ -865,21 +920,29 @@
        *
        * @return {array}
        */
-      filteredOptions() {
-        let options = this.mutableOptions.filter((option) => {
-          if(!this.searching) return true
-          if (typeof option === 'object' && option.hasOwnProperty(this.labelKey)) {
-            return option[this.labelKey].toLowerCase().indexOf(this.search.toLowerCase()) > -1
-          } else if (typeof option === 'object' && !option.hasOwnProperty(this.labelKey)) {
-            return console.warn(`[vue-select warn]: Label key "option.${this.labelKey}" does not exist in options object.\nhttp://sagalbot.github.io/vue-select/#ex-labels`)
-          }
-          return option.toLowerCase().indexOf(this.search.toLowerCase()) > -1
-        })
-        if (!options.length && this.pushTags && this.search.length && !this.optionExists(this.search)) {
-          options.unshift(this.search)
-        }
-        return options
-      },
+        filteredOptions() {
+            let options = [];
+            if(!this.searching) options = this.mutableOptions.slice()
+            else {
+                let filter = (option) => {
+                    if(typeof(option) === 'object') {
+                        if(option.hasOwnProperty("options")) {
+                            option.options = option.options.filter(filter)
+                            if(option.options.length) return true
+                        }
+                        if(!option.hasOwnProperty(this.labelKey))
+                            return console.warn(`[vue-select warn]: Label key "option.${this.labelKey}" does not exist in options object.\nhttp://sagalbot.github.io/vue-select/#ex-labels`)
+                        return option[this.labelKey].toLowerCase().indexOf(this.search.toLowerCase()) > -1
+                    }
+                    return option.toLowerCase().indexOf(this.search.toLowerCase()) > -1
+                }
+                options = this.mutableOptions.filter(filter)
+            }
+            if(!options.length && this.pushTags && this.search.length && !this.optionExists(this.search)) {
+                options.unshift(this.createOptionLabel(this.search))
+            }
+            return options
+        },
 
       /**
        * Check if there aren't any options selected.

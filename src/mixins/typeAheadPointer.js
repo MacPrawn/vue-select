@@ -1,15 +1,24 @@
 module.exports = {
   data() {
     return {
-      typeAheadPointer: -1
+      typeAheadPointer: -1,
+      typeAheadOptions: []
     }
   },
 
-  watch: {
-    filteredOptions() {
-      this.typeAheadPointer = 0
-    }
-  },
+    watch: {
+        filteredOptions() {
+            this.typeAheadOptions = []
+            this.filteredOptions.forEach((option) => {
+                if(typeof(option) === 'object') {
+                    if(option.hasOwnProperty("options")) {
+                        option.options.forEach((option) => { this.typeAheadOptions.push(option) })
+                    } else this.typeAheadOptions.push(option)
+                } else this.typeAheadOptions.push(option)
+            })
+            this.typeAheadPointer = 0
+        }
+    },
 
   methods: {
     /**
@@ -32,7 +41,7 @@ module.exports = {
      * @return {void}
      */
     typeAheadDown() {
-      if (this.typeAheadPointer < this.filteredOptions.length - 1) {
+      if (this.typeAheadPointer < this.typeAheadOptions.length - 1) {
         this.typeAheadPointer++
         if( this.maybeAdjustScroll ) {
           this.maybeAdjustScroll()
@@ -46,8 +55,8 @@ module.exports = {
      * @return {void}
      */
     typeAheadSelect() {
-      if( this.filteredOptions[ this.typeAheadPointer ] ) {
-        this.select( this.filteredOptions[ this.typeAheadPointer ] );
+      if( this.typeAheadOptions[ this.typeAheadPointer ] ) {
+        this.select( this.typeAheadOptions[ this.typeAheadPointer ] );
       } else if (this.taggable && this.search.length){
         this.select(this.search)
       }
