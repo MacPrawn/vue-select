@@ -376,6 +376,11 @@
     mixins: [pointerScroll, typeAheadPointer, ajax],
 
     props: {
+        debug: {
+            type: Boolean,
+            default: false
+        },
+        
       /**
        * Contains the currently selected value. Very similar to a
        * `value` attribute on an <input>. You can listen for changes
@@ -898,6 +903,7 @@
        * @return {Boolean} True if open
        */
       dropdownOpen() {
+        if(this.debug) return true
         return this.noDrop ? false : this.open && !this.mutableLoading
       },
 

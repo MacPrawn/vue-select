@@ -31,7 +31,13 @@
 
 <body>
     <div id="app">
-        <v-select placeholder="default" :options="options" push-tags>
+        <v-select placeholder="default" :options="options">
+            <template slot="selected-option" scope="props">
+                Good choice "{{ props.option.label }}"!
+            </template>
+            <template slot="picker-option" scope="props">
+                <span>How about {{ props.option.label }}?</span>
+            </template>
         </v-select>
         <v-select placeholder="multiple" multiple :options="options"></v-select>
         <v-select placeholder="multiple, taggable" multiple taggable :options="options" no-drop>
