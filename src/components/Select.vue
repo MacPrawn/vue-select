@@ -557,7 +557,7 @@
                         if(this.idKey) newOption[this.idKey] = 0
                     }
                 }
-                if((typeof(newOption) === "object") && newOption._search) {
+                if(!this.createdOptionsEmitOnly && (typeof(newOption) === "object") && newOption._search) {
                     newOption[this.labelKey] = newOption._search
                     delete newOption._search
                 }
@@ -672,11 +672,6 @@
       this.mutableLoading = this.loading
       
       this.$on('option:created', this.maybePushTag)
-      
-      console.log("created")
-    },
-    mounted() {
-        console.log("mounted")
     },
 
     methods: {
@@ -697,10 +692,8 @@
             } else {
                 if (this.pushTags && !this.optionExists(option)) {
                     option = this.createOption(option)
-console.log("created", option)
                 }
                 
-console.log("this.idKey", this.idKey, option.hasOwnProperty(this.idKey), option[this.idKey])
                 if(this.createdOptionsEmitOnly && this.idKey && option.hasOwnProperty(this.idKey) && !option[this.idKey]) this.value_changed(option)
                 else {
                     if (this.multiple && !this.mutableValue) {
