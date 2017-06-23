@@ -551,6 +551,7 @@
       createOption: {
         type: Function,
         default(newOption) {
+          console.log("Creating...", typeof(this.mutableOptions[0]), typeof(newOption))
           if (typeof this.mutableOptions[0] === 'object') {
             if(typeof(newOption) === "object") {
           console.log("Creating", newOption._search)
