@@ -554,6 +554,7 @@
           if (typeof this.mutableOptions[0] === 'object') {
             newOption = {[this.labelKey]: newOption}
           }
+console.log("createOption", newOption)
           this.$emit('option:created', newOption)
           return newOption
         }
@@ -684,6 +685,7 @@ console.log(option.id, option.name, this.optionExists(option), this.mutableOptio
                     option = this.createOption(option)
                 }
                 
+console.log("idKey", this.idKey, option.hasOwnProperty(this.idKey), option[this.idKey])
                 if(this.idKey && option.hasOwnProperty(this.idKey) && !option[this.idKey]) this.value_changed(option)
                 else {
                     if (this.multiple && !this.mutableValue) {
