@@ -680,6 +680,7 @@ console.log("createOption", newOption)
             if (this.isOptionSelected(option)) {
                 if(this.multiple) this.deselect(option)
             } else {
+console.log(this.pushTags, this.optionExists(option), option)
                 if (this.pushTags && !this.optionExists(option)) {
                     option = this.createOption(option)
                 }
