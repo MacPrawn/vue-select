@@ -562,7 +562,7 @@
                 if(this.idKey) newOption[this.idKey] = 0
             }
           }
-          console.log("Creating", newOption, newOption[this.labelKey])
+          console.log("Creating", newOption, this.labelKey, newOption[this.labelKey], newOption.id, newOption.value, newOption.name)
           this.$emit('option:created', newOption)
           return newOption
         }
