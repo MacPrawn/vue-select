@@ -548,27 +548,23 @@
        * User defined function for adding Options
        * @type {Function}
        */
-      createOption: {
-        type: Function,
-        default(newOption) {
-          console.log("Creating...", typeof(this.mutableOptions[0]), typeof(newOption))
-          if (typeof this.mutableOptions[0] === 'object') {
-            if(typeof(newOption) === "object") {
-          console.log("Creating", newOption._search)
-                if(newOption._search) {
+        createOption: {
+            type: Function,
+            default(newOption) {
+                if (typeof this.mutableOptions[0] === 'object') {
+                    if(typeof(newOption) !== "object") {
+                        newOption = {[this.labelKey]: newOption}
+                        if(this.idKey) newOption[this.idKey] = 0
+                    }
+                }
+                if((typeof(newOption) === "object") && newOption._search) {
                     newOption[this.labelKey] = newOption._search
                     //delete newOption._search
                 }
-          console.log("Creating 2", newOption[this.labelKey])
-            } else {
-                newOption = {[this.labelKey]: newOption}
-                if(this.idKey) newOption[this.idKey] = 0
+                this.$emit('option:created', newOption)
+                return newOption
             }
-          }
-          this.$emit('option:created', newOption)
-          return newOption
-        }
-      },
+        },
       /**
        * Create option item label
        * @type {Function}
