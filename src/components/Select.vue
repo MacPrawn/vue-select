@@ -679,6 +679,7 @@
             if (this.isOptionSelected(option)) {
                 if(this.multiple) this.deselect(option)
             } else {
+console.log(option.id, option.name, this.optionExists(option), this.mutableOptions.map((option) => option.id+" "+option.name))
                 if (this.pushTags && !this.optionExists(option)) {
                     option = this.createOption(option)
                 }
