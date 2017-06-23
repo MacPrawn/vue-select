@@ -552,8 +552,14 @@
         type: Function,
         default(newOption) {
           if (typeof this.mutableOptions[0] === 'object') {
-            newOption = {[this.labelKey]: newOption}
+            if(typeof(newOption) === "object") {
+                if(this.idKey && newOption.hasOwnProperty(this.idKey) && !newOption[this.idKey]) newOption[this.labelKey] = newOption._search
+            } else {
+                newOption = {[this.labelKey]: newOption}
+                if(this.idKey) newOption[this.idKey] = 0
+            }
           }
+          console.log("Creating", newOption, newOption.label)
           this.$emit('option:created', newOption)
           return newOption
         }
@@ -568,6 +574,10 @@
           if(deconstruct) return option.replace(/^Create\s+?"(.*)"$/, "$1")
           return 'Create "' + option + '"'
         }
+      },
+      createdOptionsEmitOnly: {
+        type: Boolean,
+        default: false
       },
 
       /**
@@ -627,7 +637,6 @@
        */
       value(val) {
         this.mutableValue = val
-console.log("value changed", this.mutableOptions.map((option) => option.id+" "+option.name))
       },
 
       /**
@@ -638,7 +647,6 @@ console.log("value changed", this.mutableOptions.map((option) => option.id+" "+o
        */
       options(val) {
         this.mutableOptions = val.slice(0)
-console.log("options changed", this.mutableOptions.map((option) => option.id+" "+option.name))
       },
 
       /**
@@ -683,9 +691,11 @@ console.log("options changed", this.mutableOptions.map((option) => option.id+" "
             } else {
                 if (this.pushTags && !this.optionExists(option)) {
                     option = this.createOption(option)
+console.log("created", option)
                 }
                 
-                if(this.idKey && option.hasOwnProperty(this.idKey) && !option[this.idKey]) this.value_changed(option)
+console.log("this.idKey", this.idKey, option.hasOwnProperty(this.idKey), option[this.idKey])
+                if(this.createdOptionsEmitOnly && this.idKey && option.hasOwnProperty(this.idKey) && !option[this.idKey]) this.value_changed(option)
                 else {
                     if (this.multiple && !this.mutableValue) {
                         this.mutableValue = [option]
@@ -881,7 +891,6 @@ console.log("options changed", this.mutableOptions.map((option) => option.id+" "
       maybePushTag(option) {
         if (this.pushTags) {
           this.mutableOptions.push(option)
-console.log("psuhTag", option.id, option.name, this.mutableOptions.map((option) => option.id+" "+option.name))
         }
       }
     },
@@ -970,7 +979,7 @@ console.log("psuhTag", option.id, option.name, this.mutableOptions.map((option) 
             if(!options.length && this.pushTags && this.search.length && !this.optionExists(this.search)) {
                 let option = {
                     [this.labelKey]: this.createOptionLabel(this.search),
-                    value: this.search
+                    _search: this.search
                 }
                 if(this.idKey) option[this.idKey] = 0
                 options.unshift(option)
