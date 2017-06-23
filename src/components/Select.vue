@@ -559,7 +559,7 @@
                 }
                 if((typeof(newOption) === "object") && newOption._search) {
                     newOption[this.labelKey] = newOption._search
-                    //delete newOption._search
+                    delete newOption._search
                 }
                 this.$emit('option:created', newOption)
                 return newOption
@@ -672,6 +672,11 @@
       this.mutableLoading = this.loading
       
       this.$on('option:created', this.maybePushTag)
+      
+      console.log("created")
+    },
+    mounted() {
+        console.log("mounted")
     },
 
     methods: {
