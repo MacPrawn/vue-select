@@ -31,7 +31,7 @@
 
 <body>
     <div id="app">
-        <v-select placeholder="default" :options="options">
+        <v-select placeholder="default" :options="[{label: 'Foo', value: 'foo'}]">
             <template slot="selected-option" scope="props">
                 Good choice "{{ props.option.label }}"!
             </template>
@@ -39,6 +39,7 @@
                 <span>How about {{ props.option.label }}?</span>
             </template>
         </v-select>
+        <v-select placeholder="single, push-tags" push-tags :options="[{label: 'Foo', value: 'foo'}]"></v-select>
         <v-select placeholder="multiple" multiple :options="options"></v-select>
         <v-select placeholder="multiple, taggable" multiple taggable :options="options" no-drop>
         </v-select>
