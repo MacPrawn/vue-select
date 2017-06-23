@@ -680,7 +680,7 @@ console.log("createOption", newOption)
             if (this.isOptionSelected(option)) {
                 if(this.multiple) this.deselect(option)
             } else {
-console.log(this.pushTags, this.optionExists(option), option)
+console.log(this.pushTags, this.optionExists(option), option.id, option.name)
                 if (this.pushTags && !this.optionExists(option)) {
                     option = this.createOption(option)
                 }
@@ -846,8 +846,14 @@ console.log(this.pushTags, this.optionExists(option), option)
                         const a_type = typeof(a)
                         const b_type = typeof(b)
                         if(a_type !== b_type) {
-                            if(a_type === 'object') a = a[this.label_key]
-                            if(b_type === 'object') b = b[this.label_key]
+                            if(a_type === 'object') {
+                                if(this.idKey && a.hasOwnProperty(this.idKey)) a = a[this.idKey]
+                                else if(a.hasOwnProperty(this.labelKey)) a = a[this.labelKey]
+                            }
+                            if(b_type === 'object') {
+                                if(this.idKey && b.hasOwnProperty(this.idKey)) b = b[this.idKey]
+                                else if(b.hasOwnProperty(this.labelKey)) b = b[this.labelKey]
+                            }
                         }
                         return a === b
                     };
