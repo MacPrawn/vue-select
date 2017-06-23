@@ -553,7 +553,7 @@
         default(newOption) {
           if (typeof this.mutableOptions[0] === 'object') {
             if(typeof(newOption) === "object") {
-                if(this.idKey && newOption.hasOwnProperty(this.idKey) && !newOption[this.idKey]) {
+                if(newOption._search) {
                     newOption[this.labelKey] = newOption._search
                     //delete newOption._search
                 }
