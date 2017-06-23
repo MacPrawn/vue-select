@@ -965,7 +965,12 @@
                 options = this.mutableOptions.filter(filter)
             }
             if(!options.length && this.pushTags && this.search.length && !this.optionExists(this.search)) {
-                options.unshift(this.createOptionLabel(this.search))
+                let option = {
+                    [this.labelKey]: this.createOptionLabel(this.search),
+                    value: this.search
+                }
+                if(this.idKey) option[this.idKey] = 0
+                options.unshift(option)
             }
             return options
         },
