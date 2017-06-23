@@ -553,13 +553,16 @@
         default(newOption) {
           if (typeof this.mutableOptions[0] === 'object') {
             if(typeof(newOption) === "object") {
-                if(this.idKey && newOption.hasOwnProperty(this.idKey) && !newOption[this.idKey]) newOption[this.labelKey] = newOption._search
+                if(this.idKey && newOption.hasOwnProperty(this.idKey) && !newOption[this.idKey]) {
+                    newOption[this.labelKey] = newOption._search
+                    delete newOption._search
+                }
             } else {
                 newOption = {[this.labelKey]: newOption}
                 if(this.idKey) newOption[this.idKey] = 0
             }
           }
-          console.log("Creating", newOption, newOption.label)
+          console.log("Creating", newOption, newOption[this.labelKey])
           this.$emit('option:created', newOption)
           return newOption
         }
