@@ -837,7 +837,7 @@ console.log(this.pushTags, this.optionExists(option), option.id, option.name, th
        * @param  {Object || String} option
        * @return {boolean}
        */
-        optionExists(option) {
+        optionExists(option, selecting) {
             let exists = false
             
             this.mutableOptions.forEach(opt => {
@@ -970,6 +970,7 @@ console.log("maybePushTag", this.mutableOptions)
             if(!options.length && this.pushTags && this.search.length && !this.optionExists(this.search)) {
                 options.unshift(this.createOptionLabel(this.search))
             }
+console.log(this.searching, this.mutableOptions, this.mutableOptions === options)
             return options
         },
 
