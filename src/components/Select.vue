@@ -683,6 +683,7 @@
                     option = this.createOption(option)
                 }
                 
+console.log("select", option)
                 if(this.idKey && option.hasOwnProperty(this.idKey) && !option[this.idKey]) this.value_changed(option)
                 else {
                     if (this.multiple && !this.mutableValue) {
@@ -873,6 +874,7 @@
       maybePushTag(option) {
         if (this.pushTags) {
           this.mutableOptions.push(option)
+console.log("maybePushTag", this.mutableOptions)
         }
       }
     },
