@@ -881,6 +881,7 @@ console.log("options changed", this.mutableOptions.map((option) => option.id+" "
       maybePushTag(option) {
         if (this.pushTags) {
           this.mutableOptions.push(option)
+console.log("psuhTag", option.id, option.name, this.mutableOptions.map((option) => option.id+" "+option.name))
         }
       }
     },
