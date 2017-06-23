@@ -554,7 +554,6 @@
           if (typeof this.mutableOptions[0] === 'object') {
             newOption = {[this.labelKey]: newOption}
           }
-console.log("createOption", newOption)
           this.$emit('option:created', newOption)
           return newOption
         }
@@ -628,6 +627,7 @@ console.log("createOption", newOption)
        */
       value(val) {
         this.mutableValue = val
+console.log("value changed", this.mutableOptions.map((option) => option.id+" "+option.name))
       },
 
       /**
@@ -638,6 +638,7 @@ console.log("createOption", newOption)
        */
       options(val) {
         this.mutableOptions = val.slice(0)
+console.log("options changed", this.mutableOptions.map((option) => option.id+" "+option.name))
       },
 
       /**
@@ -680,12 +681,10 @@ console.log("createOption", newOption)
             if (this.isOptionSelected(option)) {
                 if(this.multiple) this.deselect(option)
             } else {
-console.log(option.id, option.name, this.optionExists(option), this.mutableOptions.map((option) => option.id+" "+option.name))
                 if (this.pushTags && !this.optionExists(option)) {
                     option = this.createOption(option)
                 }
                 
-console.log("idKey", this.idKey, option.hasOwnProperty(this.idKey), option[this.idKey])
                 if(this.idKey && option.hasOwnProperty(this.idKey) && !option[this.idKey]) this.value_changed(option)
                 else {
                     if (this.multiple && !this.mutableValue) {
