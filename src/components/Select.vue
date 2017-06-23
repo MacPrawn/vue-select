@@ -332,6 +332,8 @@
               :readonly="!searchable"
               :style="{ width: isValueEmpty ? '100%' : 'auto' }"
               :id="inputId"
+              
+              v-focus.lazy="focus"
       >
 
       <i v-if="!noDrop" ref="openIndicator" role="presentation" class="open-indicator"></i>
@@ -368,15 +370,16 @@
 </template>
 
 <script type="text/babel">
+  import { mixin as focusMixin }  from 'vue-focus';
   import pointerScroll from '../mixins/pointerScroll'
   import typeAheadPointer from '../mixins/typeAheadPointer'
   import ajax from '../mixins/ajax'
 
   export default {
-    mixins: [pointerScroll, typeAheadPointer, ajax],
+    mixins: [pointerScroll, typeAheadPointer, ajax, focusMixin],
 
     props: {
-        debug: {
+        focus: {
             type: Boolean,
             default: false
         },
@@ -934,7 +937,6 @@
        * @return {Boolean} True if open
        */
       dropdownOpen() {
-        if(this.debug) return true
         return this.noDrop ? false : this.open && !this.mutableLoading
       },
 
