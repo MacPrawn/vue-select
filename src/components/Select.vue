@@ -554,7 +554,6 @@
           if (typeof this.mutableOptions[0] === 'object') {
             newOption = {[this.labelKey]: newOption}
           }
-console.log("createOption", newOption)
           this.$emit('option:created', newOption)
           return newOption
         }
@@ -637,7 +636,7 @@ console.log("createOption", newOption)
        * @return {void}
        */
       options(val) {
-        this.mutableOptions = val
+        this.mutableOptions = val.slice(0)
       },
 
       /**
@@ -680,7 +679,6 @@ console.log("createOption", newOption)
             if (this.isOptionSelected(option)) {
                 if(this.multiple) this.deselect(option)
             } else {
-console.log(this.pushTags, this.optionExists(option), option.id, option.name, this.mutableOptions)
                 if (this.pushTags && !this.optionExists(option)) {
                     option = this.createOption(option)
                 }
@@ -881,7 +879,6 @@ console.log(this.pushTags, this.optionExists(option), option.id, option.name, th
       maybePushTag(option) {
         if (this.pushTags) {
           this.mutableOptions.push(option)
-console.log("maybePushTag", this.mutableOptions)
         }
       }
     },
@@ -970,7 +967,6 @@ console.log("maybePushTag", this.mutableOptions)
             if(!options.length && this.pushTags && this.search.length && !this.optionExists(this.search)) {
                 options.unshift(this.createOptionLabel(this.search))
             }
-console.log(this.searching, this.mutableOptions, this.mutableOptions === options)
             return options
         },
 
