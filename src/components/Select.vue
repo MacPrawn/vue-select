@@ -555,14 +555,14 @@
             if(typeof(newOption) === "object") {
                 if(this.idKey && newOption.hasOwnProperty(this.idKey) && !newOption[this.idKey]) {
                     newOption[this.labelKey] = newOption._search
-                    delete newOption._search
+                    //delete newOption._search
                 }
             } else {
                 newOption = {[this.labelKey]: newOption}
                 if(this.idKey) newOption[this.idKey] = 0
             }
           }
-          console.log("Creating", newOption, this.labelKey, newOption[this.labelKey], newOption.id, newOption.value, newOption.name)
+          console.log("Creating", newOption, this.labelKey, newOption[this.labelKey], newOption.id, newOption.value, newOption.name, newOption._search)
           this.$emit('option:created', newOption)
           return newOption
         }
