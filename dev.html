@@ -47,7 +47,7 @@
         <v-select placeholder="multiple, closeOnSelect=true" multiple :options="['cat', 'dog', 'bear']"></v-select>
         <v-select placeholder="multiple, closeOnSelect=false" multiple :close-on-select="false" :options="['cat', 'dog', 'bear']"></v-select>
         <v-select placeholder="unsearchable" :options="options" :searchable="false"></v-select>
-        <v-select placeholder="search github.." label="full_name" @search="search" :options="ajaxRes"></v-select>
+        <v-select placeholder="search github.." label-key="full_name" @search="search" :options="ajaxRes"></v-select>
         <v-select placeholder="optgroups" multiple push-tags taggable :options="[{label: 'FooBar', options: [{label: 'Foo', value: 'foo'}, {label: 'Bar', value: 'bar'}]}]"></v-select>
     </div>
 </body>
