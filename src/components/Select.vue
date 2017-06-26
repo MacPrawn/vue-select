@@ -448,6 +448,10 @@
         type: Boolean,
         default: true
       },
+      clientSideSearch: {
+        type: Boolean,
+        default: true
+      },
 
       /**
        * Equivalent to the `multiple` attribute on a `<select>` input.
@@ -961,7 +965,7 @@
        */
         filteredOptions() {
             let options = [];
-            if(!this.searching) options = this.mutableOptions.slice()
+            if(!this.searching || !this.clientSideSearch) options = this.mutableOptions.slice()
             else {
                 let filter = (option) => {
                     if(typeof(option) === 'object') {
