@@ -470,6 +470,10 @@
         type: String,
         default: ''
       },
+      placeholderAsHint: {
+        type: Boolean,
+        default: false
+      },
 
       /**
        * Sets a Vue transition property on the `.dropdown-menu`. vue-select
@@ -950,7 +954,7 @@
        * @return {String} Placeholder text
        */
       searchPlaceholder() {
-        if (this.isValueEmpty && this.placeholder) {
+        if (this.placeholderAsHint || (this.isValueEmpty && this.placeholder)) {
           return this.placeholder;
         }
       },
