@@ -954,6 +954,7 @@
        * @return {String} Placeholder text
        */
       searchPlaceholder() {
+        console.log(this.placeholderAsHint, "||", (this.isValueEmpty && this.placeholder))
         if (this.placeholderAsHint || (this.isValueEmpty && this.placeholder)) {
           return this.placeholder;
         }
