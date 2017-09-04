@@ -678,6 +678,7 @@
      * attach any event listeners.
      */
     created() {
+      console.log("created", this.value)
       this.mutableValue = this.value
       this.mutableOptions = this.options.slice(0)
       this.mutableLoading = this.loading
