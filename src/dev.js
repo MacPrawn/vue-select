@@ -20,6 +20,9 @@ new Vue({
     ajaxRes: []
   },
   methods: {
+    filter(search, loading) {
+      return this.options.filter(country => country.label.toLowerCase().indexOf(search.toLowerCase())>=0)
+    },
     search(search, loading) {
       loading(true)
       this.getRepositories(search, loading, this)
