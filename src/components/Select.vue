@@ -835,6 +835,7 @@
       onSearchFocus() {
         this.open = true
         this.$emit('search:focus')
+        console.log("search:focus", this.searchOnEmpty)
         if(this.searchOnEmpty) this.onSearch(this.search, this.toggleLoading)
       },
 
