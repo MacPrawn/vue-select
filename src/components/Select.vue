@@ -833,10 +833,8 @@
        * @return {void}
        */
       onSearchFocus() {
-        console.log('search:focus')
         this.open = true
         this.$emit('search:focus')
-        console.log('search:focus', this.searchOnEmpty, this.onSearch)
         if(this.searchOnEmpty) this.onSearch(this.search, this.toggleLoading)
       },
 

@@ -23,9 +23,7 @@ module.exports = {
 		 */
 		onSearch: {
 			type: Function,
-			default: function(search, loading){
-			    console.log("default onsearch")
-			}
+			default: function(search, loading){}
 		}
 	},
 
@@ -41,7 +39,6 @@ module.exports = {
 		 * invoke the onSearch callback.
 		 */
 		search() {
-		    console.log('watch search', this.searchOnEmpty, this.search.length, this.onSearch)
 			if(this.searchOnEmpty || (this.search.length > 0)) {
 				this.onSearch(this.search, this.toggleLoading)
         this.$emit('search', this.search, this.toggleLoading)
