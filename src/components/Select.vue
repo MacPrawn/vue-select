@@ -845,9 +845,15 @@
        */
       maybeDeleteValue() {
         if (!this.$refs.search.value.length && this.mutableValue) {
+          let return_value = null
           if(this.multiple) {
-            if(this.allowEmpty || (this.mutableValue.length > 1)) return this.mutableValue.pop()
-          } else if(this.allowEmpty) return this.mutableValue = null
+            if(this.allowEmpty || (this.mutableValue.length > 1)) return_value = this.mutableValue.pop()
+          } else if(this.allowEmpty) return_value = this.mutableValue = null
+          
+          if(return_value) {
+            this.value_changed()
+            return return_value
+          }
         }
       },
 
