@@ -1018,7 +1018,12 @@
       isValueEmpty() {
         if (this.mutableValue) {
           if (typeof this.mutableValue === 'object') {
-            return !Object.keys(this.mutableValue).length
+            if(!Object.keys(this.mutableValue).length) return true
+            let isEmpty = true
+            Object.values(this.mutableValue).forEach((value) => {
+                isEmpty = isEmpty && !value
+            })
+            return isEmpty
           }
           return !this.mutableValue.length
         }
