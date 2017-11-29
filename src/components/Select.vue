@@ -846,14 +846,20 @@
       maybeDeleteValue() {
         if (!this.$refs.search.value.length && this.mutableValue) {
           let return_value = null
+          let has_return_value = false
           if(this.multiple) {
             if(this.allowEmpty || (this.mutableValue.length > 1)) {
-              this.value_changed()
+              has_return_value = true
               return_value = this.mutableValue.pop()
             }
           } else if(this.allowEmpty) {
+            has_return_value = true
+            return_value = this.mutableValue = null
+          }
+          
+          if(has_return_value) {
             this.value_changed()
-            return this.mutableValue = null
+            return return_value
           }
         }
       },
