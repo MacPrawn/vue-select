@@ -844,17 +844,16 @@
        * @return {this.value}
        */
       maybeDeleteValue() {
-        console.log("maybeDeleteValue - 1", this.$refs.search.value.length, this.mutableValue)
         if (!this.$refs.search.value.length && this.mutableValue) {
           let return_value = null
           if(this.multiple) {
-            if(this.allowEmpty || (this.mutableValue.length > 1)) return_value = this.mutableValue.pop()
-          } else if(this.allowEmpty) return_value = this.mutableValue = null
-          
-          console.log("maybeDeleteValue - 2", return_value)
-          if(return_value) {
+            if(this.allowEmpty || (this.mutableValue.length > 1)) {
+              this.value_changed()
+              return_value = this.mutableValue.pop()
+            }
+          } else if(this.allowEmpty) {
             this.value_changed()
-            return return_value
+            return this.mutableValue = null
           }
         }
       },
