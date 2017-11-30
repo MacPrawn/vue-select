@@ -1023,6 +1023,7 @@
             Object.values(this.mutableValue).forEach((value) => {
                 isEmpty = isEmpty && !value
             })
+            console.log(this.mutableValue, "isEmpty", isEmpty)
             return isEmpty
           }
           return !this.mutableValue.length
